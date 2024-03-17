@@ -6,7 +6,7 @@ import { formatEther, parseGwei } from 'viem'
 import styles from '../../styles/Home.module.css';
 import { fundMeAbi } from '../../abis'
 
-export default function(){
+export default function Web3(){
     const { address } = useAccount()
     const { data, isLoading} = useBalance({address})
     const { writeContract } = useWriteContract()
