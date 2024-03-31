@@ -14,6 +14,8 @@ import {
   zora,
 } from 'wagmi/chains';
 import { getDefaultConfig, RainbowKitProvider } from '@rainbow-me/rainbowkit';
+import Layout from '../components/layout/layout';
+import Head from 'next/head';
 
 const config = getDefaultConfig({
   appName: 'RainbowKit App',
@@ -37,7 +39,17 @@ function MyApp({ Component, pageProps }: AppProps) {
     <WagmiProvider config={config}>
       <QueryClientProvider client={client}>
         <RainbowKitProvider>
-          <Component {...pageProps} />
+          <Layout>
+            <Head>
+              <title>Web3 Events</title>
+              <meta name="description" content="Web3 Events" />
+              <meta
+                name="viewport"
+                content="initial-scale=1.0, width=device-width"
+              />
+            </Head>
+            <Component {...pageProps} />
+          </Layout>
         </RainbowKitProvider>
       </QueryClientProvider>
     </WagmiProvider>
