@@ -1,35 +1,39 @@
 'use client'
 
-import { useAccount, useWriteContract } from 'wagmi';
-import { parseGwei } from 'viem'
+import { useAccount, useSwitchChain, useWriteContract } from 'wagmi';
+import { parseAbi } from 'viem'
 import { fundMeAbi } from '../../abis'
 import classes from './pay.module.css';
 import Button from "../ui/button";
+import { useConnectModal } from '@rainbow-me/rainbowkit';
 
 export default function Pay() {
-	const { address, chain } = useAccount()
-	const { writeContract } = useWriteContract()
+	const { openConnectModal } = useConnectModal();
+	const { isConnected, chain } = useAccount()
+	const { switchChainAsync } = useSwitchChain()
+	const { isPending, writeContract } = useWriteContract()
 
 	function pay() {
-		if (address) {
-			if (chain?.name === 'Sepolia') {
-				writeContract({
-					abi: fundMeAbi,
-					address: address,
-					functionName: 'mint',
-					args: [address, parseGwei('0.001')]
-				})
-			} else {
-				alert("请切换到Sepolia网络")
-			}
+		writeContract({
+			abi: parseAbi(['function mint(uint256 tokenId)']),
+			address: '0x13C8B8bd86d53F1C54CC57C2c13Eb47d6D7eCaF9',
+			functionName: 'mint',
+			args: [BigInt(69420)]
+		})
+	}
+
+	function click() {
+		// Sepolia网络
+		if (chain?.id === 11_155_111) {
+			pay()
 		} else {
-			alert("请点击右上角连接钱包")
+			switchChainAsync({ chainId: 11_155_111 })
 		}
 	}
 
 	return (
 		<section className={classes.pay}>
-			<Button onClick={pay}>点击打赏</Button>
+			<Button onClick={isConnected ? click : openConnectModal} disabled={isPending}>点击打赏</Button>
 		</section>
 	)
 }
